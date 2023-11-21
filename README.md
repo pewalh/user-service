@@ -19,21 +19,26 @@ For "real" use, wrap the service in a docker container and use another database 
     poetry install
     ```
     to create the virtual environment and install the project dependecies.
-4. First time - Set up a clean local database:
+4. Create or update the database:
     ```
     poetry run prisma db push
     ```
     Note: The database storage file *not* included in git.
+    
+5. Generate the prisma client: 
+    ```
+    poetry run prisma generate
+    ```
 
 
 ## Run the service
 Run the service within the virtual environment with 
 ```
-poetry run uvicorn user-service:app --host 0.0.0.0 --port 8000
+poetry run uvicorn main:app --port 8000
 ```
 This starts the service locally. It will use a local sqlite database in ***TODO*** 
 
-Follow the link `link` to interact with the service via its swagger ui/doc.
+A Swagger UI for documentation and testing of/interaction with the API is available in [http://localhost:8000/doc](http://localhost:8000/docs).
 
 
 ## API

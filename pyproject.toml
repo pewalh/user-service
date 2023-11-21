@@ -10,6 +10,7 @@ python = "^3.12"
 fastapi = "^0.104.1"
 uvicorn = { version = "^0.24.0.post1", extras = ["standard"] }
 prisma = "^0.11.0"
+mypy = "^1.7.0"
 
 
 [build-system]

@@ -6,9 +6,9 @@ datasource db {
 
 // generator
 generator client {
-    provider             = "prisma-client-py"
-    interface            = "asyncio"
-    recursive_type_depth = 5  // not used, but specified for the grace of the type checker
+    provider               = "prisma-client-py"
+    interface              = "asyncio"
+    recursive_type_depth   = 5  // not used, but specified for the grace of the type checker
 }
 
 // models ----------------------------------------------------------------------
@@ -20,8 +20,8 @@ model User {
     email     String    @unique
     active    Boolean   @default(true)
   
-    // one-to-many relationship to ContactDetails
-    contactDetails ContactDetails[]
+    // one-to-one relationship to ContactDetails
+    contactDetails ContactDetails?
 }
 
 model ContactDetails {
@@ -31,6 +31,6 @@ model ContactDetails {
     address     String
     
     // foreign key relationship to User
-    user        User    @relation(fields: [userId], references: [id])
-    userId      Int
+    user        User?   @relation(fields: [userId], references: [id])
+    userId      Int     @unique
 }
