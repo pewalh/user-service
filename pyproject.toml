@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "user-service"
+version = "0.1.0"
+description = "Simple microservice that demos user data handling."
+authors = ["Peter Walhagen <peter.walhagen@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.104.1"
+uvicorn = { version = "^0.24.0.post1", extras = ["standard"] }
+prisma = "^0.11.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
