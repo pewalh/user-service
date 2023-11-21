@@ -36,21 +36,42 @@ Run the service within the virtual environment with
 ```
 poetry run uvicorn main:app --port 8000
 ```
-This starts the service locally. It will use a local sqlite database in ***TODO*** 
+This starts the service locally. It will use a local sqlite database in the file `database.db` placed in the project directory.
 
 A Swagger UI for documentation and testing of/interaction with the API is available in [http://localhost:8000/doc](http://localhost:8000/docs).
 
 
 ## API
-***TODO*** 
+Only ***users*** api has been implemented even if the contact details lives in a separate table. The approach is rather more functional than pure CRUD.
+As for now the contact details primary key is never exposed through the API since that is not relevant information when interacting with the user. A contact detail record can be created, updated and deleted via the user api.
+
+Endpoints:
+* Get all users: `GET /api/v1/users`: Gets all users with performance in mind, implementing pagination and no loading of relational dependencies (the contact details). Returns empty list if no users are found.
+* Get full user info by `user_id` or `email`, `GET /api/v1/users/{user_id}` resp `GET /api/v1/users/email/{email}`. Returns 404 error if id is not recognized. Loads full info with contact details into response.
+* Create user: `POST /api/v1/users`: Create a user by specifying email and username.
+Returns full info into response.
+* Update username: `PUT /api/v1/users/{user_id}/username`: Updates username if user_id is found, else returns 404.
+* Update email: `PUT /api/v1/users/{user_id}/email`: Updates email if user_id is found, else returns 404.
+* Update active status: `PUT /api/v1/users/{user_id}/active`: Updates active flag if user_id is found, else returns 404.
+* Update active status: `PUT /api/v1/users/{user_id}/contact_details`: Creates or updates contact details for the user if user_id is found, else returns 404.
+* Delete user: `DELETE /api/v1/users/{user_id}`: Delete the user if user_id is found, else returns 404. Will delete any associated contact details records aswell.
+* Delete contact details record: `DELETE /api/v1/users/{user_id}/contact_details`: Delete the contact details associated with the user_id if user_id is found, else returns 404.
+
+
 
 
 ## Tests
-***TODO***
+Type checking is performed with mypy. Run with:
+```
+poetry run mypy
+```
+There are some relational includes that it cannot understand. Lines like `include={"contactDetails": True})` where ` # type: ignore[prisma-parsing]` has been added to suppress warnings.
 
 
 
-# TODO for more extensive service
+# TODO for more extensive implementation
 * Change database to postgresql for better scaling and concurrent writes etc
 * wrap the service in a docker container
 * Implement separate endpoints for CRUD:ing the contact details table. Now everything goes through user, which is ok for now but may entangle concerns
+* Investigate if there is another way to load the relational dependencies in a way mypy can understand so that no warning suppressions are needed.
+

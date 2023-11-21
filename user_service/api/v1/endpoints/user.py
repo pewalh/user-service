@@ -130,12 +130,17 @@ async def update_user_contact_details(user_id: int, contact_data: ContactDetails
 # delete a user, by specifying the user id
 @router.delete("/users/{user_id}")
 async def delete_user(user_id: int, db: Prisma = Depends(get_db)):
-    await db.user.delete(where={"id": user_id})
+    # contact details are deleted automatically they are set to cascade delete in the schema
+    user = await db.user.delete(where={"id": user_id})
+    if user is None:
+        raise HTTPException(status_code=404, detail=f"User with id '{user_id}' not found")
     return {"message": "User deleted successfully."}
 
 
 # delete a users contact details, by specifying the user id
 @router.delete("/users/{user_id}/contact_details")
 async def delete_user_contact_details(user_id: int, db: Prisma = Depends(get_db)):
-    await db.contactdetails.delete(where={"userId": user_id})
+    contact_details = await db.contactdetails.delete(where={"userId": user_id})
+    if contact_details is None:
+        raise HTTPException(status_code=404, detail=f"Contact details for user with id '{user_id}' not found")
     return {"message": "Contact details deleted successfully."}
