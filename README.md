@@ -48,3 +48,9 @@ A Swagger UI for documentation and testing of/interaction with the API is availa
 ## Tests
 ***TODO***
 
+
+
+# TODO for more extensive service
+* Change database to postgresql for better scaling and concurrent writes etc
+* wrap the service in a docker container
+* Implement separate endpoints for CRUD:ing the contact details table. Now everything goes through user, which is ok for now but may entangle concerns
