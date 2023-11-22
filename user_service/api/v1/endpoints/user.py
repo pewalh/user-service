@@ -56,7 +56,7 @@ async def create_user(user_info: UserBasicInfo, db: Prisma = Depends(get_db)) ->
             "username": user_info.username,
             "email": user_info.email,
         },
-        include={"contactDetails": True})  # type: ignore[prisma-parsing]
+    )
     return UserInfoFull(**user.model_dump())
 
 
@@ -128,19 +128,19 @@ async def update_user_contact_details(user_id: int, contact_data: ContactDetails
 # ---------- DELETE METHODS ----------
 
 # delete a user, by specifying the user id
-@router.delete("/users/{user_id}")
+@router.delete("/users/{user_id}", response_model=UserInfoFull)
 async def delete_user(user_id: int, db: Prisma = Depends(get_db)):
     # contact details are deleted automatically they are set to cascade delete in the schema
     user = await db.user.delete(where={"id": user_id})
-    if user is None:
-        raise HTTPException(status_code=404, detail=f"User with id '{user_id}' not found")
-    return {"message": "User deleted successfully."}
+    return _return_full_user_or_raise(user_id, user)
 
 
 # delete a users contact details, by specifying the user id
-@router.delete("/users/{user_id}/contact_details")
+@router.delete("/users/{user_id}/contact_details", response_model=ContactDetailsData)
 async def delete_user_contact_details(user_id: int, db: Prisma = Depends(get_db)):
     contact_details = await db.contactdetails.delete(where={"userId": user_id})
-    if contact_details is None:
+    if contact_details is not None:
+        return ContactDetailsData(**contact_details.model_dump())
+    else:
         raise HTTPException(status_code=404, detail=f"Contact details for user with id '{user_id}' not found")
-    return {"message": "Contact details deleted successfully."}
+

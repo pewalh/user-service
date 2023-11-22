@@ -54,8 +54,8 @@ Returns full info into response.
 * Update email: `PUT /api/v1/users/{user_id}/email`: Updates email if user_id is found, else returns 404.
 * Update active status: `PUT /api/v1/users/{user_id}/active`: Updates active flag if user_id is found, else returns 404.
 * Update active status: `PUT /api/v1/users/{user_id}/contact_details`: Creates or updates contact details for the user if user_id is found, else returns 404.
-* Delete user: `DELETE /api/v1/users/{user_id}`: Delete the user if user_id is found, else returns 404. Will delete any associated contact details records aswell.
-* Delete contact details record: `DELETE /api/v1/users/{user_id}/contact_details`: Delete the contact details associated with the user_id if user_id is found, else returns 404.
+* Delete user: `DELETE /api/v1/users/{user_id}`: Delete the user and returns which user was deleted if user_id is found, else returns 404. Will delete any associated contact details records aswell.
+* Delete contact details record: `DELETE /api/v1/users/{user_id}/contact_details`: Delete the contact details associated with the user_id if user_id is found and returns contact details, else returns 404.
 
 
 
@@ -68,10 +68,19 @@ poetry run mypy
 There are some relational includes that it cannot understand. Lines like `include={"contactDetails": True})` where ` # type: ignore[prisma-parsing]` has been added to suppress warnings.
 
 
+Unit tests can be run with:
+```
+poetry run pytest
+```
+These tests mock the database and tests more or less only shallowly the api.
 
-# TODO for more extensive implementation
+
+
+
+## TODO for more extensive implementation
 * Change database to postgresql for better scaling and concurrent writes etc
 * wrap the service in a docker container
 * Implement separate endpoints for CRUD:ing the contact details table. Now everything goes through user, which is ok for now but may entangle concerns
 * Investigate if there is another way to load the relational dependencies in a way mypy can understand so that no warning suppressions are needed.
+* Add system tests that tests the db interface.
 
